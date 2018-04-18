@@ -240,18 +240,6 @@ class UnixTerminal implements Terminal
     }
 
     /**
-     * Read keypress from terminal input
-     */
-    public function readCharacter() : string
-    {
-        $buffer = '';
-        $this->input->read(1, function ($data) use (&$buffer) {
-            $buffer .= $data;
-        });
-        return $buffer;
-    }
-
-    /**
      * Write to the output stream
      */
     public function write(string $buffer): void

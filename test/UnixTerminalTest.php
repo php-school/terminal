@@ -229,23 +229,6 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[10C", $output->fetch());
     }
 
-    public function testReadCharacter() : void
-    {
-        $tempStream = fopen('php://temp', 'r+');
-        fwrite($tempStream, 'mystring');
-        rewind($tempStream);
-
-        $input  = new ResourceInputStream($tempStream);
-        $output = $this->createMock(OutputStream::class);
-
-        $terminal = new UnixTerminal($input, $output);
-
-        self::assertEquals('m', $terminal->readCharacter());
-        self::assertEquals('y', $terminal->readCharacter());
-
-        fclose($tempStream);
-    }
-
     public function testRead() : void
     {
         $tempStream = fopen('php://temp', 'r+');

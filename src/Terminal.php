@@ -112,11 +112,6 @@ interface Terminal
     public function read(int $bytes) : string;
 
     /**
-     * Read keypress from terminal input
-     */
-    public function readCharacter() : string;
-
-    /**
      * Write to the output stream
      */
     public function write(string $buffer) : void;
