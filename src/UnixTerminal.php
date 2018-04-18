@@ -111,8 +111,10 @@ class UnixTerminal implements Terminal
      */
     public function disableCanonicalMode() : void
     {
-        exec('stty -icanon -echo');
-        $this->isCanonical = false;
+        if ($this->isCanonical) {
+            exec('stty -icanon -echo');
+            $this->isCanonical = false;
+        }
     }
 
     /**
@@ -122,8 +124,10 @@ class UnixTerminal implements Terminal
      */
     public function enableCanonicalMode() : void
     {
-        exec('stty canon echo' . $this->getOriginalConfiguration());
-        $this->isCanonical = true;
+        if (!$this->isCanonical) {
+            exec('stty canon echo' . $this->getOriginalConfiguration());
+            $this->isCanonical = true;
+        }
     }
 
     /**
