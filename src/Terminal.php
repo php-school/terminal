@@ -4,163 +4,120 @@ namespace PhpSchool\Terminal;
 
 /**
  * @author Michael Woodward <mikeymike.mw@gmail.com>
+ * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class Terminal implements TerminalInterface
+interface Terminal
 {
     /**
-     * @var bool
+     * Get the available width of the terminal
      */
-    private $isTTY;
+    public function getWidth() : int;
 
     /**
-     * @var bool
+     * Get the available height of the terminal
      */
-    private $isCanonical = false;
+    public function getHeight() : int;
 
     /**
-     * @var int
+     * Disables echoing every character back to the terminal. This means
+     * we do not have to clear the line when reading.
      */
-    private $width;
+    public function disableEchoBack() : void;
 
     /**
-     * @var int
+     * Enable echoing back every character input to the terminal.
      */
-    private $height;
+    public function enableEchoBack() : void;
 
     /**
-     * @var string
+     * Is echo back mode enabled
      */
-    private $details;
+    public function isEchoBack() : bool;
 
     /**
-     * @var string
+     * Disable canonical input (allow each key press for reading, rather than the whole line)
+     *
+     * @see https://www.gnu.org/software/libc/manual/html_node/Canonical-or-Not.html
      */
-    private $originalConfiguration;
-
-    public function __construct()
-    {
-        $this->getOriginalConfiguration();
-    }
-
-    public function getWidth(): int
-    {
-        return $this->width ?: $this->width = (int) exec('tput cols');
-    }
-
-    public function getHeight(): int
-    {
-        return $this->height ?: $this->height = (int) exec('tput lines');
-    }
-
-    public function getDetails(): string
-    {
-        if (!$this->details) {
-            $this->details = function_exists('posix_ttyname')
-                ? @posix_ttyname(STDOUT)
-                : "Can't retrieve terminal details";
-        }
-
-        return $this->details;
-    }
-
-    private function getOriginalConfiguration(): string
-    {
-        return $this->originalConfiguration ?: $this->originalConfiguration = exec('stty -g');
-    }
-
-    public function setCanonicalMode(bool $useCanonicalMode = true)
-    {
-        if ($useCanonicalMode) {
-            exec('stty -icanon');
-            $this->isCanonical = true;
-        } else {
-            exec('stty ' . $this->getOriginalConfiguration());
-            $this->isCanonical = false;
-        }
-    }
-
-    public function isCanonical(): bool
-    {
-        return $this->isCanonical;
-    }
-
-    public function isTTY(): bool
-    {
-        return $this->isTTY ?: $this->isTTY = function_exists('posix_isatty') && @posix_isatty(STDOUT);
-    }
+    public function disableCanonicalMode() : void;
 
     /**
-     * @see https://github.com/symfony/Console/blob/master/Output/StreamOutput.php#L95-L102
+     * Enable canonical input - read input by line
+     *
+     * @see https://www.gnu.org/software/libc/manual/html_node/Canonical-or-Not.html
      */
-    public function supportsColour(): bool
-    {
-        if (DIRECTORY_SEPARATOR === '\\') {
-            return false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI') || 'xterm' === getenv('TERM');
-        }
+    public function enableCanonicalMode() : void;
 
-        return $this->isTTY();
-    }
+    /**
+     * Is canonical mode enabled or not
+     */
+    public function isCanonicalMode() : bool;
 
-    public function getKeyedInput(): KeypressInput
-    {
-        $map = [
-            "\033[A" => KeypressInput::UP(),
-            "k"      => KeypressInput::UP(),
-            "\033[B" => KeypressInput::DOWN(),
-            "j"      => KeypressInput::DOWN(),
-            "\n"     => KeypressInput::ENTER(),
-            "\r"     => KeypressInput::ENTER(),
-            " "      => KeypressInput::ENTER(),
-        ];
+    /**
+     * Check if the Input & Output streams are interactive. Eg - they are
+     * connected to a terminal.
+     *
+     * @return bool
+     */
+    public function isInteractive() : bool;
 
-        $input = fread(STDIN, 4);
-        $this->clearLine();
+    /**
+     * Test whether terminal supports colour output
+     */
+    public function supportsColour() : bool;
 
-        return array_key_exists($input, $map)
-            ? $map[$input]
-            : $input;
-    }
+    /**
+     * Clear the terminal window
+     */
+    public function clear() : void;
 
-    public function clear()
-    {
-        echo "\033[2J";
-    }
+    /**
+     * Clear the current cursors line
+     */
+    public function clearLine() : void;
 
-    public function enableCursor()
-    {
-        echo "\033[?25h";
-    }
+    /**
+     * Clean the whole console without jumping the window
+     */
+    public function clean() : void;
 
-    public function disableCursor()
-    {
-        echo "\033[?25l";
-    }
+    /**
+     * Enable cursor display
+     */
+    public function enableCursor() : void;
 
-    public function moveCursorToTop()
-    {
-        echo "\033[H";
-    }
+    /**
+     * Disable cursor display
+     */
+    public function disableCursor() : void;
 
-    public function moveCursorToRow(int $rowNumber)
-    {
-        echo sprintf("\033[%d;0H", $rowNumber);
-    }
+    /**
+     * Move the cursor to the top left of the window
+     */
+    public function moveCursorToTop() : void;
 
-    public function moveCursorToColumn(int $column)
-    {
-        echo sprintf("\033[%dC", $column);
-    }
+    /**
+     * Move the cursor to the start of a specific row
+     */
+    public function moveCursorToRow(int $rowNumber) : void;
 
-    public function clearLine()
-    {
-        echo sprintf("\033[%dD\033[K", $this->getWidth());
-    }
+    /**
+     * Move the cursor to a specific column
+     */
+    public function moveCursorToColumn(int $columnNumber) : void;
 
-    public function clean()
-    {
-        foreach (range(0, $this->getHeight()) as $rowNum) {
-            $this->moveCursorToRow($rowNum);
-            $this->clearLine();
-        }
-    }
+    /**
+     * Read from the input stream
+     */
+    public function read(int $bytes) : string;
+
+    /**
+     * Read keypress from terminal input
+     */
+    public function readCharacter() : string;
+
+    /**
+     * Write to the output stream
+     */
+    public function write(string $buffer) : void;
 }
