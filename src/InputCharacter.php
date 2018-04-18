@@ -48,21 +48,36 @@ class InputCharacter
         $this->data = $data;
     }
 
+    /**
+     * Is this character a control sequence?
+     */
     public function isControl() : bool
     {
         return isset(static::$controls[$this->data]);
     }
 
+    /**
+     * Is this character a normal character?
+     */
     public function isNotControl() : bool
     {
         return ! $this->isControl();
     }
 
+    /**
+     * Get the raw character or control sequence
+     */
     public function get() : string
     {
         return $this->data;
     }
 
+    /**
+     * Get the actual control name that this sequence represents.
+     * One of the class constants. Eg. self::UP.
+     *
+     * Throws an exception if the character is not actually a control sequence
+     */
     public function getControl() : string
     {
         if (!isset(static::$controls[$this->data])) {
@@ -72,24 +87,37 @@ class InputCharacter
         return static::$controls[$this->data];
     }
 
+    /**
+     * Get the raw character or control sequence
+     */
     public function __toString() : string
     {
         return $this->get();
     }
 
+    /**
+     * Does the given control name exist? eg self::UP.
+     */
     public static function controlExists(string $controlName) : bool
     {
         return in_array($controlName, static::$controls, true);
     }
 
+    /**
+     * Get all of the available control names
+     */
     public static function getControls() : array
     {
         return array_values(array_unique(static::$controls));
     }
 
+    /**
+     * Create a instance from a given control name. Throws an exception if the
+     * control name does not exist.
+     */
     public static function fromControlName(string $controlName) : self
     {
-        if (!in_array($controlName, static::$controls, true)) {
+        if (!static::controlExists($controlName)) {
             throw new \InvalidArgumentException(sprintf('Control "%s" does not exist', $controlName));
         }
 
