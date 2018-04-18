@@ -4,13 +4,13 @@ namespace PhpSchool\TerminalTest;
 
 use PhpSchool\Terminal\InputCharacter;
 use PhpSchool\Terminal\Terminal;
-use PhpSchool\Terminal\TerminalReader;
+use PhpSchool\Terminal\NonCanonicalReader;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
-class TerminalReaderTest extends TestCase
+class NonCanonicalReaderTest extends TestCase
 {
     public function testExceptionIsThrownIfMappingAddedForNonControlCharacter() : void
     {
@@ -18,7 +18,7 @@ class TerminalReaderTest extends TestCase
         self::expectExceptionMessage('Control "w" does not exist');
 
         $terminal = $this->createMock(Terminal::class);
-        $terminalReader = new TerminalReader($terminal);
+        $terminalReader = new NonCanonicalReader($terminal);
         $terminalReader->addControlMapping('p', 'w');
     }
 
@@ -28,7 +28,7 @@ class TerminalReaderTest extends TestCase
         self::expectExceptionMessage('Control "w" does not exist');
 
         $terminal = $this->createMock(Terminal::class);
-        $terminalReader = new TerminalReader($terminal);
+        $terminalReader = new NonCanonicalReader($terminal);
         $terminalReader->addControlMappings(['p' => 'w']);
     }
 
@@ -37,10 +37,11 @@ class TerminalReaderTest extends TestCase
         $terminal = $this->createMock(Terminal::class);
         $terminal
             ->expects($this->once())
-            ->method('readCharacter')
+            ->method('read')
+            ->with(4)
             ->willReturn('w');
 
-        $terminalReader = new TerminalReader($terminal);
+        $terminalReader = new NonCanonicalReader($terminal);
         $terminalReader->addControlMapping('w', InputCharacter::UP);
 
         $char = $terminalReader->readCharacter();
@@ -55,10 +56,11 @@ class TerminalReaderTest extends TestCase
         $terminal = $this->createMock(Terminal::class);
         $terminal
             ->expects($this->once())
-            ->method('readCharacter')
+            ->method('read')
+            ->with(4)
             ->willReturn('w');
 
-        $terminalReader = new TerminalReader($terminal);
+        $terminalReader = new NonCanonicalReader($terminal);
 
         $char = $terminalReader->readCharacter();
 
@@ -71,10 +73,11 @@ class TerminalReaderTest extends TestCase
         $terminal = $this->createMock(Terminal::class);
         $terminal
             ->expects($this->once())
-            ->method('readCharacter')
+            ->method('read')
+            ->with(4)
             ->willReturn("\n");
 
-        $terminalReader = new TerminalReader($terminal);
+        $terminalReader = new NonCanonicalReader($terminal);
 
         $char = $terminalReader->readCharacter();
 
