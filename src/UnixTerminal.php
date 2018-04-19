@@ -38,11 +38,6 @@ class UnixTerminal implements Terminal
     /**
      * @var string
      */
-    private $details;
-
-    /**
-     * @var string
-     */
     private $originalConfiguration;
 
     /**
