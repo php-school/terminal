@@ -15,7 +15,7 @@ class UnixTerminal implements Terminal
     /**
      * @var bool
      */
-    private $isCanonical = false;
+    private $isCanonical;
 
     /**
      * Whether terminal echo back is enabled or not.
@@ -58,8 +58,15 @@ class UnixTerminal implements Terminal
     public function __construct(InputStream $input, OutputStream $output)
     {
         $this->getOriginalConfiguration();
+        $this->getOriginalCanonicalMode();
         $this->input = $input;
         $this->output = $output;
+    }
+
+    private function getOriginalCanonicalMode() : void
+    {
+        exec('stty -a', $output);
+        $this->isCanonical = (strpos(implode("\n", $output), ' icanon') !== false);
     }
 
     public function getWidth() : int
@@ -112,7 +119,7 @@ class UnixTerminal implements Terminal
     public function disableCanonicalMode() : void
     {
         if ($this->isCanonical) {
-            exec('stty -icanon -echo');
+            exec('stty -icanon');
             $this->isCanonical = false;
         }
     }
@@ -125,7 +132,7 @@ class UnixTerminal implements Terminal
     public function enableCanonicalMode() : void
     {
         if (!$this->isCanonical) {
-            exec('stty canon echo' . $this->getOriginalConfiguration());
+            exec('stty canon');
             $this->isCanonical = true;
         }
     }
