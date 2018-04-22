@@ -229,6 +229,28 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[10C", $output->fetch());
     }
 
+    public function testShowAlternateScreen() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+        $terminal->showSecondaryScreen();
+
+        self::assertEquals("\033[?47h", $output->fetch());
+    }
+
+    public function testShowMainScreen() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+        $terminal->showPrimaryScreen();
+
+        self::assertEquals("\033[?47l", $output->fetch());
+    }
+
     public function testRead() : void
     {
         $tempStream = fopen('php://temp', 'r+');
