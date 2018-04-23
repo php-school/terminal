@@ -229,6 +229,16 @@ class UnixTerminal implements Terminal
         $this->output->write(sprintf("\033[%dC", $column));
     }
 
+    public function showSecondaryScreen() : void
+    {
+        $this->output->write("\033[?47h");
+    }
+
+    public function showPrimaryScreen() : void
+    {
+        $this->output->write("\033[?47l");
+    }
+
     /**
      * Read bytes from the input stream
      */
