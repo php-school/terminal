@@ -48,12 +48,17 @@ class InputCharacter
         $this->data = $data;
     }
 
+    public function isHandledControl() : bool
+    {
+        return isset(static::$controls[$this->data]); 
+    }
+
     /**
      * Is this character a control sequence?
      */
     public function isControl() : bool
     {
-        return isset(static::$controls[$this->data]);
+        return preg_match( '/[\x00-\x1F\x7F]/', $this->data);
     }
 
     /**
