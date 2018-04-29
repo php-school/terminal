@@ -50,7 +50,7 @@ class InputCharacter
 
     public function isHandledControl() : bool
     {
-        return isset(static::$controls[$this->data]); 
+        return isset(static::$controls[$this->data]);
     }
 
     /**
@@ -58,7 +58,7 @@ class InputCharacter
      */
     public function isControl() : bool
     {
-        return preg_match( '/[\x00-\x1F\x7F]/', $this->data);
+        return preg_match('/[\x00-\x1F\x7F]/', $this->data);
     }
 
     /**
