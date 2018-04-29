@@ -98,4 +98,15 @@ class InputCharacterTest extends TestCase
         self::assertTrue($char->isControl());
         self::assertFalse($char->isHandledControl());
     }
+
+    public function testUnicodeCharacter() : void
+    {
+        $char = new InputCharacter('ß');
+
+        self::assertFalse($char->isControl());
+        self::assertFalse($char->isHandledControl());
+        self::assertTrue($char->isNotControl());
+        self::assertEquals('ß', $char->get());
+        self::assertEquals('ß', $char->__toString());
+    }
 }
