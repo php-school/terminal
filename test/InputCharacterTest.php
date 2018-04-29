@@ -15,6 +15,7 @@ class InputCharacterTest extends TestCase
         $char = new InputCharacter("\n");
 
         self::assertTrue($char->isControl());
+        self::assertTrue($char->isHandledControl());
         self::assertFalse($char->isNotControl());
         self::assertEquals('ENTER', $char->getControl());
         self::assertEquals("\n", $char->get());
@@ -26,6 +27,7 @@ class InputCharacterTest extends TestCase
         $char = new InputCharacter('p');
 
         self::assertFalse($char->isControl());
+        self::assertFalse($char->isHandledControl());
         self::assertTrue($char->isNotControl());
         self::assertEquals('p', $char->get());
         self::assertEquals('p', $char->__toString());
@@ -82,5 +84,18 @@ class InputCharacterTest extends TestCase
     {
         self::assertTrue(InputCharacter::controlExists(InputCharacter::UP));
         self::assertFalse(InputCharacter::controlExists('w'));
+    }
+
+    public function testIsControlOnNotExplicitlyHandledControls() : void
+    {
+        $char = new InputCharacter("\016"); //ctrl + p (I think)
+
+        self::assertTrue($char->isControl());
+        self::assertFalse($char->isHandledControl());
+
+        $char = new InputCharacter("\021"); //ctrl + u (I think)
+
+        self::assertTrue($char->isControl());
+        self::assertFalse($char->isHandledControl());
     }
 }
