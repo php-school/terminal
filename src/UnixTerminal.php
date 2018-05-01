@@ -196,6 +196,22 @@ class UnixTerminal implements Terminal
         $this->output->write(sprintf("\033[%dD\033[K", $this->getWidth()));
     }
 
+    /**
+     * Erase the entire current line
+     */
+    public function clearEntireLine() : void
+    {
+        $this->output->write("\033[2K");
+    }
+
+    /**
+     * Erase screen from the current line down to the bottom of the screen
+     */
+    public function clearDown() : void
+    {
+        $this->output->write("\033[J");
+    }
+
     public function clean() : void
     {
         foreach (range(0, $this->getHeight()) as $rowNum) {

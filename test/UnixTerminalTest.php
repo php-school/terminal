@@ -155,6 +155,28 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[23D\033[K", $output->fetch());
     }
 
+    public function testClearEntireLine() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+        $terminal->clearEntireLine();
+
+        self::assertEquals("\033[2K", $output->fetch());
+    }
+
+    public function testClearDown() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+        $terminal->clearDown();
+
+        self::assertEquals("\033[J", $output->fetch());
+    }
+
     public function testClean() : void
     {
         $input  = $this->createMock(InputStream::class);
