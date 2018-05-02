@@ -80,11 +80,6 @@ interface Terminal
      * Clear the current cursors line
      */
     public function clearLine() : void;
-    
-    /**
-     * Erase the entire current line
-     */
-    public function clearEntireLine() : void;
 
     /**
      * Erase screen from the current line down to the bottom of the screen

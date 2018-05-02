@@ -193,14 +193,6 @@ class UnixTerminal implements Terminal
 
     public function clearLine() : void
     {
-        $this->output->write(sprintf("\033[%dD\033[K", $this->getWidth()));
-    }
-
-    /**
-     * Erase the entire current line
-     */
-    public function clearEntireLine() : void
-    {
         $this->output->write("\033[2K");
     }
 

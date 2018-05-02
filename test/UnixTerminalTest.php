@@ -145,23 +145,7 @@ class UnixTerminalTest extends TestCase
         $output = new BufferedOutput;
 
         $terminal = new UnixTerminal($input, $output);
-        $rf = new \ReflectionObject($terminal);
-        $rp = $rf->getProperty('width');
-        $rp->setAccessible(true);
-        $rp->setValue($terminal, 23);
-
         $terminal->clearLine();
-
-        self::assertEquals("\033[23D\033[K", $output->fetch());
-    }
-
-    public function testClearEntireLine() : void
-    {
-        $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
-
-        $terminal = new UnixTerminal($input, $output);
-        $terminal->clearEntireLine();
 
         self::assertEquals("\033[2K", $output->fetch());
     }
@@ -193,7 +177,7 @@ class UnixTerminalTest extends TestCase
 
         $terminal->clean();
 
-        self::assertEquals("\033[0;0H\033[23D\033[K\033[1;0H\033[23D\033[K\033[2;0H\033[23D\033[K", $output->fetch());
+        self::assertEquals("\033[0;0H\033[2K\033[1;0H\033[2K\033[2;0H\033[2K", $output->fetch());
     }
 
     public function testEnableCursor() : void
