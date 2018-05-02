@@ -82,6 +82,11 @@ interface Terminal
     public function clearLine() : void;
 
     /**
+     * Erase screen from the current line down to the bottom of the screen
+     */
+    public function clearDown() : void;
+
+    /**
      * Clean the whole console without jumping the window
      */
     public function clean() : void;

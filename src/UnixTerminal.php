@@ -193,7 +193,15 @@ class UnixTerminal implements Terminal
 
     public function clearLine() : void
     {
-        $this->output->write(sprintf("\033[%dD\033[K", $this->getWidth()));
+        $this->output->write("\033[2K");
+    }
+
+    /**
+     * Erase screen from the current line down to the bottom of the screen
+     */
+    public function clearDown() : void
+    {
+        $this->output->write("\033[J");
     }
 
     public function clean() : void
