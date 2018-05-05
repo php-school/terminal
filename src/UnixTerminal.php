@@ -34,6 +34,11 @@ class UnixTerminal implements Terminal
      * @var int
      */
     private $height;
+    
+    /**
+     * @var int;
+     */
+    private $colourSupport;
 
     /**
      * @var string
@@ -72,6 +77,11 @@ class UnixTerminal implements Terminal
     public function getHeight() : int
     {
         return $this->height ?: $this->height = (int) exec('tput lines');
+    }
+
+    public function getColourSupport() : int
+    {
+        return $this->colourSupport ?: $this->colourSupport = (int) exec('tput colors');
     }
 
     private function getOriginalConfiguration() : string

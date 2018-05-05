@@ -284,4 +284,16 @@ class UnixTerminalTest extends TestCase
 
         self::assertEquals('My awesome string', $output->fetch());
     }
+
+    public function testGetColourSupport() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+
+        // Travis terminal supports 8 colours, but just in case
+        // in ever changes I'll add the 256 colors possibility too
+        self::assertTrue($terminal->getColourSupport() === 8 || $terminal->getColourSupport() === 256);
+    }
 }
