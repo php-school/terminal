@@ -295,5 +295,8 @@ class UnixTerminalTest extends TestCase
         // Travis terminal supports 8 colours, but just in case
         // in ever changes I'll add the 256 colors possibility too
         self::assertTrue($terminal->getColourSupport() === 8 || $terminal->getColourSupport() === 256);
+        
+        var_dump(exec('infocmp screen'));
+        exit();
     }
 }
