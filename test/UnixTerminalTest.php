@@ -284,4 +284,14 @@ class UnixTerminalTest extends TestCase
 
         self::assertEquals('My awesome string', $output->fetch());
     }
+
+    public function testGetColourSupport() : void
+    {
+        $input  = $this->createMock(InputStream::class);
+        $output = new BufferedOutput;
+
+        $terminal = new UnixTerminal($input, $output);
+
+        self::assertEquals(0, $terminal->getColourSupport());
+    }
 }
