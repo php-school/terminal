@@ -19,6 +19,11 @@ interface Terminal
     public function getHeight() : int;
 
     /**
+     * Get the number of colours the terminal supports (1, 8, 256, true colours)
+     */
+    public function getColourSupport() : int;
+
+    /**
      * Disables echoing every character back to the terminal. This means
      * we do not have to clear the line when reading.
      */
