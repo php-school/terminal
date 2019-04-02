@@ -58,6 +58,7 @@ class InputCharacterTest extends TestCase
                 'CTRLW',
                 'ENTER',
                 'TAB',
+                'ESC',
             ],
             InputCharacter::getControls()
         );
