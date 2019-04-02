@@ -26,6 +26,7 @@ class InputCharacter
     public const CTRLW = 'CTRLW';
     public const ENTER = 'ENTER';
     public const TAB = 'TAB';
+    public const ESC = 'ESC';
 
     private static $controls = [
         "\033[A" => self::UP,
@@ -41,6 +42,7 @@ class InputCharacter
         "\027"   => self::CTRLW,
         "\n"     => self::ENTER,
         "\t"     => self::TAB,
+        "\e"     => self::ESC,
     ];
 
     public function __construct(string $data)
