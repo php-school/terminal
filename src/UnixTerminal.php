@@ -137,7 +137,7 @@ class UnixTerminal implements Terminal
     public function enableCanonicalMode() : void
     {
         if (!$this->isCanonical) {
-            exec('stty canon');
+            exec('stty icanon');
             $this->isCanonical = true;
         }
     }
