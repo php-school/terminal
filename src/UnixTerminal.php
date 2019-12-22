@@ -73,7 +73,7 @@ class UnixTerminal implements Terminal
         $this->getOriginalConfiguration();
         $this->getOriginalCanonicalMode();
 
-        register_tick_function('pcntl_signal_dispatch');
+        pcntl_async_signals(true);
 
         $this->onSignal(SIGWINCH, [$this, 'refreshDimensions']);
     }
@@ -112,12 +112,10 @@ class UnixTerminal implements Terminal
 
     public function onSignal(int $signo, callable $handler) : void
     {
-        if (!\is_callable($handler)) {
-            throw new \InvalidArgumentException('Handler for signal not callable');
+        if (!isset($this->signalHandlers[$signo])) {
+            $this->signalHandlers[$signo] = [];
+            pcntl_signal($signo, [$this, 'handleSignal']);
         }
-
-        pcntl_signal($signo, [$this, 'handleSignal']);
-
         $this->signalHandlers[$signo][] = $handler;
     }
 

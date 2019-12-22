@@ -7,6 +7,9 @@ namespace PhpSchool\Terminal\IO;
  */
 class BufferedOutput implements OutputStream
 {
+    /**
+     * @var string
+     */
     private $buffer = '';
 
     public function write(string $buffer): void

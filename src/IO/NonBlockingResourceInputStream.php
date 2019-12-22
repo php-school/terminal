@@ -11,9 +11,12 @@ class NonBlockingResourceInputStream implements InputStream
      */
     private $innerStream;
 
-    public function __construct($stream = STDIN)
+    /**
+     * @param resource $stream
+     */
+    public function __construct($stream = null)
     {
-        $this->innerStream = new ResourceInputStream($stream);
+        $this->innerStream = new ResourceInputStream($stream ?? STDIN);
         stream_set_blocking($stream, false);
     }
 
@@ -30,6 +33,6 @@ class NonBlockingResourceInputStream implements InputStream
      */
     public function isInteractive(): bool
     {
-        $this->innerStream->isInteractive();
+        return $this->innerStream->isInteractive();
     }
 }
