@@ -17,8 +17,13 @@ class ResourceInputStream implements InputStream
      */
     private $stream;
 
-    public function __construct($stream = STDIN)
+    /**
+     * @param resource $stream
+     */
+    public function __construct($stream = null)
     {
+        $stream = $stream ? $stream : STDIN;
+
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new \InvalidArgumentException('Expected a valid stream');
         }

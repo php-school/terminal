@@ -3,7 +3,7 @@
 namespace PhpSchool\Terminal;
 
 /**
- * This class takes a terminal and disabled canonical mode. It reads the input
+ * This class takes a terminal and disables canonical mode. It reads the input
  * and returns characters and control sequences as `InputCharacters` as soon
  * as they are read - character by character.
  *
@@ -56,12 +56,14 @@ class NonCanonicalReader
 
     /**
      * This should be ran with the terminal canonical mode disabled.
-     *
-     * @return InputCharacter
      */
-    public function readCharacter() : InputCharacter
+    public function readCharacter() : ?InputCharacter
     {
         $char = $this->terminal->read(4);
+
+        if ($char === '') {
+            return null;
+        }
 
         if (isset($this->mappings[$char])) {
             return InputCharacter::fromControlName($this->mappings[$char]);
