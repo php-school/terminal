@@ -34,6 +34,14 @@ class ResourceInputStream implements InputStream
     public function read(int $numBytes, callable $callback) : void
     {
         $buffer = fread($this->stream, $numBytes);
+        if (!empty($buffer)) {
+            // Prevent blocking to handle pasted input.
+            stream_set_blocking($this->stream, false);
+        } else {
+            // Re-enable blocking when input has been handled.
+            stream_set_blocking($this->stream, true);
+        }
+
         $callback($buffer);
     }
 
