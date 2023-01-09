@@ -28,6 +28,9 @@ class InputCharacter
     public const TAB = 'TAB';
     public const ESC = 'ESC';
 
+    /**
+     * @var array
+     */
     private static $controls = [
         "\033[A" => self::UP,
         "\033[B" => self::DOWN,
@@ -64,7 +67,7 @@ class InputCharacter
      */
     public function isControl() : bool
     {
-        return preg_match('/[\x00-\x1F\x7F]/', $this->data);
+        return (bool) preg_match('/[\x00-\x1F\x7F]/', $this->data);
     }
 
     /**
@@ -132,6 +135,6 @@ class InputCharacter
             throw new \InvalidArgumentException(sprintf('Control "%s" does not exist', $controlName));
         }
 
-        return new static(array_search($controlName, static::$controls, true));
+        return new self(array_search($controlName, static::$controls, true));
     }
 }

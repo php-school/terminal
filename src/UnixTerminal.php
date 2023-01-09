@@ -1,4 +1,4 @@
-<?php
+<?php declare(ticks=1);
 
 namespace PhpSchool\Terminal;
 
@@ -46,6 +46,11 @@ class UnixTerminal implements Terminal
     private $originalConfiguration;
 
     /**
+     * @var array
+     */
+    private $signalHandlers = [];
+
+    /**
      * @var InputStream
      */
     private $input;
@@ -57,16 +62,31 @@ class UnixTerminal implements Terminal
 
     public function __construct(InputStream $input, OutputStream $output)
     {
-        $this->getOriginalConfiguration();
-        $this->getOriginalCanonicalMode();
+        $this->initTerminal();
+
         $this->input = $input;
         $this->output = $output;
+    }
+
+    private function initTerminal() : void
+    {
+        $this->getOriginalConfiguration();
+        $this->getOriginalCanonicalMode();
+
+        pcntl_async_signals(true);
+
+        $this->onSignal(SIGWINCH, [$this, 'refreshDimensions']);
     }
 
     private function getOriginalCanonicalMode() : void
     {
         exec('stty -a', $output);
         $this->isCanonical = (strpos(implode("\n", $output), ' icanon') !== false);
+    }
+
+    private function getOriginalConfiguration() : string
+    {
+        return $this->originalConfiguration ?: $this->originalConfiguration = exec('stty -g');
     }
 
     public function getWidth() : int
@@ -84,9 +104,26 @@ class UnixTerminal implements Terminal
         return $this->colourSupport ?: $this->colourSupport = (int) exec('tput colors');
     }
 
-    private function getOriginalConfiguration() : string
+    private function refreshDimensions() : void
     {
-        return $this->originalConfiguration ?: $this->originalConfiguration = exec('stty -g');
+        $this->width  = (int) exec('tput cols');
+        $this->height = (int) exec('tput lines');
+    }
+
+    public function onSignal(int $signo, callable $handler) : void
+    {
+        if (!isset($this->signalHandlers[$signo])) {
+            $this->signalHandlers[$signo] = [];
+            pcntl_signal($signo, [$this, 'handleSignal']);
+        }
+        $this->signalHandlers[$signo][] = $handler;
+    }
+
+    public function handleSignal(int $signo) : void
+    {
+        foreach ($this->signalHandlers[$signo] as $signalHandler) {
+            $signalHandler();
+        }
     }
 
     /**
