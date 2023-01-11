@@ -17,6 +17,11 @@ class ResourceInputStream implements InputStream
      */
     private $stream;
 
+    /**
+     * @var bool Original blocking state.
+     */
+    private $blocking;
+
     public function __construct($stream = STDIN)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
@@ -28,7 +33,16 @@ class ResourceInputStream implements InputStream
             throw new \InvalidArgumentException('Expected a readable stream');
         }
 
+        $meta = stream_get_meta_data($stream);
+        $this->blocking = $meta['blocked'];
         $this->stream = $stream;
+    }
+
+    /**
+     * Restore the blocking state.
+     */
+    public function __destruct() {
+        stream_set_blocking($this->stream, $this->blocking);
     }
 
     public function read(int $numBytes, callable $callback) : void
