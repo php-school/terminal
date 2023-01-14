@@ -22,7 +22,7 @@ class ResourceInputStream implements InputStream
      */
     private $blocking;
 
-    public function __construct($stream = STDIN)
+    public function __construct($stream = \STDIN)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new \InvalidArgumentException('Expected a valid stream');
