@@ -41,6 +41,6 @@ class ResourceOutputStream implements OutputStream
      */
     public function isInteractive() : bool
     {
-        return posix_isatty($this->stream);
+        return stream_isatty($this->stream);
     }
 }
