@@ -17,7 +17,7 @@ class ResourceOutputStream implements OutputStream
      */
     private $stream;
 
-    public function __construct($stream = STDOUT)
+    public function __construct($stream = \STDOUT)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new \InvalidArgumentException('Expected a valid stream');
