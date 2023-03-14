@@ -24,13 +24,13 @@ class ResourceInputStream implements InputStream
 
     public function __construct($stream = \STDIN)
     {
-        if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
+        try {
+            $meta = stream_get_meta_data($this->stream);
+            if ($meta['mode'][0] != 'r' AND $meta['mode'][-1] != '+') {
+                throw new \InvalidArgumentException('Expected a readable stream');
+            }
+        } catch(\TypeError $e){
             throw new \InvalidArgumentException('Expected a valid stream');
-        }
-
-        $meta = stream_get_meta_data($stream);
-        if (strpos($meta['mode'], 'r') === false && strpos($meta['mode'], '+') === false) {
-            throw new \InvalidArgumentException('Expected a readable stream');
         }
 
         $this->blocking = $meta['blocked'];
