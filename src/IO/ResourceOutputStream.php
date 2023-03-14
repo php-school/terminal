@@ -20,7 +20,7 @@ class ResourceOutputStream implements OutputStream
     public function __construct($stream = \STDOUT)
     {
         try {
-            $mode = stream_get_meta_data($this->stream)['mode'];
+            $meta = stream_get_meta_data($this->stream)['mode'];
             if ($meta['mode'][0] != 'r' AND $meta['mode'][-1] != '+') {
                 throw new \InvalidArgumentException('Expected a writable stream');
             }
