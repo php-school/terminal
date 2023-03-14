@@ -33,7 +33,6 @@ class ResourceInputStream implements InputStream
             throw new \InvalidArgumentException('Expected a readable stream');
         }
 
-        $meta = stream_get_meta_data($stream);
         $this->blocking = $meta['blocked'];
         $this->stream = $stream;
     }
