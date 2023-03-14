@@ -19,13 +19,13 @@ class ResourceOutputStream implements OutputStream
 
     public function __construct($stream = \STDOUT)
     {
-        if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
+        try {
+            $mode = stream_get_meta_data($this->stream)['mode'];
+            if ($meta['mode'][0] != 'r' AND $meta['mode'][-1] != '+') {
+                throw new \InvalidArgumentException('Expected a writable stream');
+            }
+        } catch(\TypeError $e){
             throw new \InvalidArgumentException('Expected a valid stream');
-        }
-
-        $meta = stream_get_meta_data($stream);
-        if (strpos($meta['mode'], 'r') !== false && strpos($meta['mode'], '+') === false) {
-            throw new \InvalidArgumentException('Expected a writable stream');
         }
 
         $this->stream = $stream;
