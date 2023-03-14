@@ -11,6 +11,9 @@ namespace PhpSchool\Terminal;
  *
  * @author Aydin Hassan <aydin@hotmail.co.uk>
  */
+
+use PhpSchool\Terminal\InputCharacter;
+
 class NonCanonicalReader
 {
     /**
