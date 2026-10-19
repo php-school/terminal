@@ -2,11 +2,6 @@
 
 namespace PhpSchool\Terminal\IO;
 
-use function is_resource;
-use function get_resource_type;
-use function stream_get_meta_data;
-use function strpos;
-
 /**
  * @author Chung Leong <chernyshevsky@hotmail.com>
  */
