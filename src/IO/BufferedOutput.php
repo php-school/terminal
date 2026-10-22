@@ -7,6 +7,9 @@ namespace PhpSchool\Terminal\IO;
  */
 class BufferedOutput implements OutputStream
 {
+    /**
+     * @var string
+     */
     private $buffer = '';
 
     public function write(string $buffer): void
@@ -14,7 +17,7 @@ class BufferedOutput implements OutputStream
         $this->buffer .= $buffer;
     }
 
-    public function fetch(bool $clean = true) : string
+    public function fetch(bool $clean = true): string
     {
         $buffer = $this->buffer;
 
@@ -25,7 +28,7 @@ class BufferedOutput implements OutputStream
         return $buffer;
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->fetch();
     }
@@ -33,7 +36,7 @@ class BufferedOutput implements OutputStream
     /**
      * Whether the stream is connected to an interactive terminal
      */
-    public function isInteractive() : bool
+    public function isInteractive(): bool
     {
         return false;
     }

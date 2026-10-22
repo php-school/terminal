@@ -22,30 +22,41 @@ class ResourceInputStream implements InputStream
      */
     private $blocking;
 
+    /**
+     * @param resource $stream
+     */
     public function __construct($stream = \STDIN)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
             throw new \InvalidArgumentException('Expected a valid stream');
         }
 
+        /** @var array<string, mixed> $meta Not every stream type (eg php://memory) reports 'blocked' */
         $meta = stream_get_meta_data($stream);
         if (strpos($meta['mode'], 'r') === false && strpos($meta['mode'], '+') === false) {
             throw new \InvalidArgumentException('Expected a readable stream');
         }
 
-        $this->blocking = $meta['blocked'];
+        $this->blocking = (bool) ($meta['blocked'] ?? true);
         $this->stream = $stream;
     }
 
     /**
      * Restore the blocking state.
      */
-    public function __destruct() {
-        stream_set_blocking($this->stream, $this->blocking);
+    public function __destruct()
+    {
+        if (is_resource($this->stream)) {
+            stream_set_blocking($this->stream, $this->blocking);
+        }
     }
 
-    public function read(int $numBytes, callable $callback) : void
+    public function read(int $numBytes, callable $callback): void
     {
+        if ($numBytes < 1) {
+            throw new \InvalidArgumentException('Number of bytes to read must be greater than 0');
+        }
+
         $buffer = fread($this->stream, $numBytes);
         if (!empty($buffer)) {
             // Prevent blocking to handle pasted input.
@@ -61,7 +72,7 @@ class ResourceInputStream implements InputStream
     /**
      * Whether the stream is connected to an interactive terminal
      */
-    public function isInteractive() : bool
+    public function isInteractive(): bool
     {
         return stream_isatty($this->stream);
     }

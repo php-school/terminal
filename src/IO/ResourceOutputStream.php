@@ -17,6 +17,9 @@ class ResourceOutputStream implements OutputStream
      */
     private $stream;
 
+    /**
+     * @param resource $stream
+     */
     public function __construct($stream = \STDOUT)
     {
         if (!is_resource($stream) || get_resource_type($stream) !== 'stream') {
@@ -39,7 +42,7 @@ class ResourceOutputStream implements OutputStream
     /**
      * Whether the stream is connected to an interactive terminal
      */
-    public function isInteractive() : bool
+    public function isInteractive(): bool
     {
         return stream_isatty($this->stream);
     }
