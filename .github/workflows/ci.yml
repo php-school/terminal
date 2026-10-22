@@ -13,6 +13,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      TERM: xterm-256color
     strategy:
       fail-fast: false
       matrix:
