@@ -6,6 +6,7 @@ use function in_array;
 
 /**
  * @author Aydin Hassan <aydin@hotmail.co.uk>
+ * @phpstan-consistent-constructor
  */
 class InputCharacter
 {
@@ -28,6 +29,9 @@ class InputCharacter
     public const TAB = 'TAB';
     public const ESC = 'ESC';
 
+    /**
+     * @var array<string, string>
+     */
     private static $controls = [
         "\033[A" => self::UP,
         "\033[B" => self::DOWN,
@@ -54,23 +58,23 @@ class InputCharacter
         $this->data = $data;
     }
 
-    public function isHandledControl() : bool
+    public function isHandledControl(): bool
     {
-        return isset(static::$controls[$this->data]);
+        return isset(self::$controls[$this->data]);
     }
 
     /**
      * Is this character a control sequence?
      */
-    public function isControl() : bool
+    public function isControl(): bool
     {
-        return preg_match('/[\x00-\x1F\x7F]/', $this->data);
+        return preg_match('/[\x00-\x1F\x7F]/', $this->data) === 1;
     }
 
     /**
      * Is this character a normal character?
      */
-    public function isNotControl() : bool
+    public function isNotControl(): bool
     {
         return ! $this->isControl();
     }
@@ -78,7 +82,7 @@ class InputCharacter
     /**
      * Get the raw character or control sequence
      */
-    public function get() : string
+    public function get(): string
     {
         return $this->data;
     }
@@ -89,19 +93,19 @@ class InputCharacter
      *
      * Throws an exception if the character is not actually a control sequence
      */
-    public function getControl() : string
+    public function getControl(): string
     {
-        if (!isset(static::$controls[$this->data])) {
+        if (!isset(self::$controls[$this->data])) {
             throw new \RuntimeException(sprintf('Character "%s" is not a control', $this->data));
         }
 
-        return static::$controls[$this->data];
+        return self::$controls[$this->data];
     }
 
     /**
      * Get the raw character or control sequence
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->get();
     }
@@ -109,29 +113,31 @@ class InputCharacter
     /**
      * Does the given control name exist? eg self::UP.
      */
-    public static function controlExists(string $controlName) : bool
+    public static function controlExists(string $controlName): bool
     {
-        return in_array($controlName, static::$controls, true);
+        return in_array($controlName, self::$controls, true);
     }
 
     /**
      * Get all of the available control names
+     *
+     * @return list<string>
      */
-    public static function getControls() : array
+    public static function getControls(): array
     {
-        return array_values(array_unique(static::$controls));
+        return array_values(array_unique(self::$controls));
     }
 
     /**
      * Create a instance from a given control name. Throws an exception if the
      * control name does not exist.
      */
-    public static function fromControlName(string $controlName) : self
+    public static function fromControlName(string $controlName): self
     {
         if (!static::controlExists($controlName)) {
             throw new \InvalidArgumentException(sprintf('Control "%s" does not exist', $controlName));
         }
 
-        return new static(array_search($controlName, static::$controls, true));
+        return new static((string) array_search($controlName, self::$controls, true));
     }
 }

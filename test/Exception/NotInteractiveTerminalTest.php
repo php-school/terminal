@@ -10,14 +10,14 @@ use PHPUnit\Framework\TestCase;
  */
 class NotInteractiveTerminalTest extends TestCase
 {
-    public function testInputNotInteractive() : void
+    public function testInputNotInteractive(): void
     {
         $e = NotInteractiveTerminal::inputNotInteractive();
 
         self::assertEquals('Input stream is not interactive (non TTY)', $e->getMessage());
     }
 
-    public function testOutputNotInteractive() : void
+    public function testOutputNotInteractive(): void
     {
         $e = NotInteractiveTerminal::outputNotInteractive();
 

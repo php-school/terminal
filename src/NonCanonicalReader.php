@@ -27,7 +27,7 @@ class NonCanonicalReader
      * Map of characters to controls.
      * Eg map 'w' to the up control.
      *
-     * @var array
+     * @var array<string, string>
      */
     private $mappings = [];
 
@@ -38,7 +38,7 @@ class NonCanonicalReader
         $this->terminal->disableCanonicalMode();
     }
 
-    public function addControlMapping(string $character, string $mapToControl) : void
+    public function addControlMapping(string $character, string $mapToControl): void
     {
         if (!InputCharacter::controlExists($mapToControl)) {
             throw new \InvalidArgumentException(sprintf('Control "%s" does not exist', $mapToControl));
@@ -47,7 +47,10 @@ class NonCanonicalReader
         $this->mappings[$character] = $mapToControl;
     }
 
-    public function addControlMappings(array $mappings) : void
+    /**
+     * @param array<string, string> $mappings
+     */
+    public function addControlMappings(array $mappings): void
     {
         foreach ($mappings as $character => $mapToControl) {
             $this->addControlMapping($character, $mapToControl);
@@ -59,7 +62,7 @@ class NonCanonicalReader
      *
      * @return InputCharacter
      */
-    public function readCharacter() : InputCharacter
+    public function readCharacter(): InputCharacter
     {
         $char = $this->terminal->read(4);
 

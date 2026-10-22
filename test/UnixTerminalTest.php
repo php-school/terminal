@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class UnixTerminalTest extends TestCase
 {
-    public function testIsInteractiveReturnsTrueIfInputAndOutputAreTTYs() : void
+    public function testIsInteractiveReturnsTrueIfInputAndOutputAreTTYs(): void
     {
         $input  = $this->createMock(InputStream::class);
         $output = $this->createMock(OutputStream::class);
@@ -32,7 +32,7 @@ class UnixTerminalTest extends TestCase
         self::assertTrue($terminal->isInteractive());
     }
 
-    public function testIsInteractiveReturnsFalseIfInputNotTTY() : void
+    public function testIsInteractiveReturnsFalseIfInputNotTTY(): void
     {
         $input  = $this->createMock(InputStream::class);
         $output = $this->createMock(OutputStream::class);
@@ -51,7 +51,7 @@ class UnixTerminalTest extends TestCase
         self::assertFalse($terminal->isInteractive());
     }
 
-    public function testIsInteractiveReturnsFalseIfOutputNotTTY() : void
+    public function testIsInteractiveReturnsFalseIfOutputNotTTY(): void
     {
         $input  = $this->createMock(InputStream::class);
         $output = $this->createMock(OutputStream::class);
@@ -70,7 +70,7 @@ class UnixTerminalTest extends TestCase
         self::assertFalse($terminal->isInteractive());
     }
 
-    public function testIsInteractiveReturnsFalseIfInputAndOutputNotTTYs() : void
+    public function testIsInteractiveReturnsFalseIfInputAndOutputNotTTYs(): void
     {
         $input  = $this->createMock(InputStream::class);
         $output = $this->createMock(OutputStream::class);
@@ -89,7 +89,7 @@ class UnixTerminalTest extends TestCase
         self::assertFalse($terminal->isInteractive());
     }
 
-    public function testMustBeInteractiveThrowsExceptionIfInputNotTTY() : void
+    public function testMustBeInteractiveThrowsExceptionIfInputNotTTY(): void
     {
         self::expectException(NotInteractiveTerminal::class);
         self::expectExceptionMessage('Input stream is not interactive (non TTY)');
@@ -106,7 +106,7 @@ class UnixTerminalTest extends TestCase
         $terminal->mustBeInteractive();
     }
 
-    public function testMustBeInteractiveThrowsExceptionIfOutputNotTTY() : void
+    public function testMustBeInteractiveThrowsExceptionIfOutputNotTTY(): void
     {
         self::expectException(NotInteractiveTerminal::class);
         self::expectExceptionMessage('Output stream is not interactive (non TTY)');
@@ -128,10 +128,10 @@ class UnixTerminalTest extends TestCase
         $terminal->mustBeInteractive();
     }
 
-    public function testClear() : void
+    public function testClear(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->clear();
@@ -139,10 +139,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[2J", $output->fetch());
     }
 
-    public function testClearLine() : void
+    public function testClearLine(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->clearLine();
@@ -150,10 +150,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[2K", $output->fetch());
     }
 
-    public function testClearDown() : void
+    public function testClearDown(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->clearDown();
@@ -161,18 +161,16 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[J", $output->fetch());
     }
 
-    public function testClean() : void
+    public function testClean(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $rf = new \ReflectionObject($terminal);
         $rp = $rf->getProperty('width');
-        $rp->setAccessible(true);
         $rp->setValue($terminal, 23);
         $rp = $rf->getProperty('height');
-        $rp->setAccessible(true);
         $rp->setValue($terminal, 2);
 
         $terminal->clean();
@@ -180,10 +178,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[0;0H\033[2K\033[1;0H\033[2K\033[2;0H\033[2K", $output->fetch());
     }
 
-    public function testEnableCursor() : void
+    public function testEnableCursor(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->enableCursor();
@@ -191,10 +189,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[?25h", $output->fetch());
     }
 
-    public function testDisableCursor() : void
+    public function testDisableCursor(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->disableCursor();
@@ -202,10 +200,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[?25l", $output->fetch());
     }
 
-    public function testMoveCursorToTop() : void
+    public function testMoveCursorToTop(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->moveCursorToTop();
@@ -213,10 +211,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[H", $output->fetch());
     }
 
-    public function testMoveCursorToRow() : void
+    public function testMoveCursorToRow(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->moveCursorToRow(2);
@@ -224,10 +222,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[2;0H", $output->fetch());
     }
 
-    public function testMoveCursorToColumn() : void
+    public function testMoveCursorToColumn(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->moveCursorToColumn(10);
@@ -235,10 +233,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[10C", $output->fetch());
     }
 
-    public function testShowAlternateScreen() : void
+    public function testShowAlternateScreen(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->showSecondaryScreen();
@@ -246,10 +244,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[?47h", $output->fetch());
     }
 
-    public function testShowMainScreen() : void
+    public function testShowMainScreen(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->showPrimaryScreen();
@@ -257,7 +255,7 @@ class UnixTerminalTest extends TestCase
         self::assertEquals("\033[?47l", $output->fetch());
     }
 
-    public function testRead() : void
+    public function testRead(): void
     {
         $tempStream = fopen('php://temp', 'r+');
         fwrite($tempStream, 'mystring');
@@ -274,10 +272,10 @@ class UnixTerminalTest extends TestCase
         fclose($tempStream);
     }
 
-    public function testWriteForwardsToOutput() : void
+    public function testWriteForwardsToOutput(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
         $terminal->write('My awesome string');
@@ -285,10 +283,10 @@ class UnixTerminalTest extends TestCase
         self::assertEquals('My awesome string', $output->fetch());
     }
 
-    public function testGetColourSupport() : void
+    public function testGetColourSupport(): void
     {
         $input  = $this->createMock(InputStream::class);
-        $output = new BufferedOutput;
+        $output = new BufferedOutput();
 
         $terminal = new UnixTerminal($input, $output);
 

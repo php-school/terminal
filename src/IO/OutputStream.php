@@ -10,10 +10,10 @@ interface OutputStream
     /**
      * Write the buffer to the stream
      */
-    public function write(string $buffer) : void;
+    public function write(string $buffer): void;
 
     /**
      * Whether the stream is connected to an interactive terminal
      */
-    public function isInteractive() : bool;
+    public function isInteractive(): bool;
 }

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class InputCharacterTest extends TestCase
 {
-    public function testWhenCharacterIsAControl() : void
+    public function testWhenCharacterIsAControl(): void
     {
         $char = new InputCharacter("\n");
 
@@ -22,7 +22,7 @@ class InputCharacterTest extends TestCase
         self::assertEquals("\n", $char->__toString());
     }
 
-    public function testWhenCharacterIsNotAControl() : void
+    public function testWhenCharacterIsNotAControl(): void
     {
         $char = new InputCharacter('p');
 
@@ -33,7 +33,7 @@ class InputCharacterTest extends TestCase
         self::assertEquals('p', $char->__toString());
     }
 
-    public function testExceptionIsThrownIfGetControlCalledWhenNotAControl() : void
+    public function testExceptionIsThrownIfGetControlCalledWhenNotAControl(): void
     {
         self::expectException(\RuntimeException::class);
         self::expectExceptionMessage('Character "p" is not a control');
@@ -42,7 +42,7 @@ class InputCharacterTest extends TestCase
         $char->getControl();
     }
 
-    public function testGetControls() : void
+    public function testGetControls(): void
     {
         self::assertEquals(
             [
@@ -64,7 +64,7 @@ class InputCharacterTest extends TestCase
         );
     }
 
-    public function testFromControlNameThrowsExceptionIfControlDoesNotExist() : void
+    public function testFromControlNameThrowsExceptionIfControlDoesNotExist(): void
     {
         self::expectException(\InvalidArgumentException::class);
         self::expectExceptionMessage('Control "w" does not exist');
@@ -72,7 +72,7 @@ class InputCharacterTest extends TestCase
         InputCharacter::fromControlName('w');
     }
 
-    public function testFromControlName() : void
+    public function testFromControlName(): void
     {
         $char = InputCharacter::fromControlName(InputCharacter::UP);
 
@@ -81,13 +81,13 @@ class InputCharacterTest extends TestCase
         self::assertEquals("\033[A", $char->get());
     }
 
-    public function testControlExists() : void
+    public function testControlExists(): void
     {
         self::assertTrue(InputCharacter::controlExists(InputCharacter::UP));
         self::assertFalse(InputCharacter::controlExists('w'));
     }
 
-    public function testIsControlOnNotExplicitlyHandledControls() : void
+    public function testIsControlOnNotExplicitlyHandledControls(): void
     {
         $char = new InputCharacter("\016"); //ctrl + p (I think)
 
@@ -100,7 +100,7 @@ class InputCharacterTest extends TestCase
         self::assertFalse($char->isHandledControl());
     }
 
-    public function testUnicodeCharacter() : void
+    public function testUnicodeCharacter(): void
     {
         $char = new InputCharacter('ß');
 

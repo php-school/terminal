@@ -34,9 +34,9 @@ class UnixTerminal implements Terminal
      * @var int
      */
     private $height;
-    
+
     /**
-     * @var int;
+     * @var int|null
      */
     private $colourSupport;
 
@@ -63,37 +63,37 @@ class UnixTerminal implements Terminal
         $this->output = $output;
     }
 
-    private function getOriginalCanonicalMode() : void
+    private function getOriginalCanonicalMode(): void
     {
         exec('stty -a', $output);
         $this->isCanonical = (strpos(implode("\n", $output), ' icanon') !== false);
     }
 
-    public function getWidth() : int
+    public function getWidth(): int
     {
         return $this->width ?: $this->width = (int) exec('tput cols');
     }
 
-    public function getHeight() : int
+    public function getHeight(): int
     {
         return $this->height ?: $this->height = (int) exec('tput lines');
     }
 
-    public function getColourSupport() : int
+    public function getColourSupport(): int
     {
         return $this->colourSupport ?: $this->colourSupport = (int) exec('tput colors');
     }
 
-    private function getOriginalConfiguration() : string
+    private function getOriginalConfiguration(): string
     {
-        return $this->originalConfiguration ?: $this->originalConfiguration = exec('stty -g');
+        return $this->originalConfiguration ?: $this->originalConfiguration = (string) exec('stty -g');
     }
 
     /**
      * Disables echoing every character back to the terminal. This means
      * we do not have to clear the line when reading.
      */
-    public function disableEchoBack() : void
+    public function disableEchoBack(): void
     {
         exec('stty -echo');
         $this->echoBack = false;
@@ -102,7 +102,7 @@ class UnixTerminal implements Terminal
     /**
      * Enable echoing back every character input to the terminal.
      */
-    public function enableEchoBack() : void
+    public function enableEchoBack(): void
     {
         exec('stty echo');
         $this->echoBack = true;
@@ -111,7 +111,7 @@ class UnixTerminal implements Terminal
     /**
      * Is echo back mode enabled
      */
-    public function isEchoBack() : bool
+    public function isEchoBack(): bool
     {
         return $this->echoBack;
     }
@@ -121,7 +121,7 @@ class UnixTerminal implements Terminal
      *
      * @see https://www.gnu.org/software/libc/manual/html_node/Canonical-or-Not.html
      */
-    public function disableCanonicalMode() : void
+    public function disableCanonicalMode(): void
     {
         if ($this->isCanonical) {
             exec('stty -icanon');
@@ -134,7 +134,7 @@ class UnixTerminal implements Terminal
      *
      * @see https://www.gnu.org/software/libc/manual/html_node/Canonical-or-Not.html
      */
-    public function enableCanonicalMode() : void
+    public function enableCanonicalMode(): void
     {
         if (!$this->isCanonical) {
             exec('stty icanon');
@@ -145,7 +145,7 @@ class UnixTerminal implements Terminal
     /**
      * Is canonical mode enabled or not
      */
-    public function isCanonicalMode() : bool
+    public function isCanonicalMode(): bool
     {
         return $this->isCanonical;
     }
@@ -153,7 +153,7 @@ class UnixTerminal implements Terminal
     /**
      * Restore the original terminal configuration
      */
-    public function restoreOriginalConfiguration() : void
+    public function restoreOriginalConfiguration(): void
     {
         exec('stty ' . $this->getOriginalConfiguration());
     }
@@ -164,7 +164,7 @@ class UnixTerminal implements Terminal
      *
      * @return bool
      */
-    public function isInteractive() : bool
+    public function isInteractive(): bool
     {
         return $this->input->isInteractive() && $this->output->isInteractive();
     }
@@ -173,7 +173,7 @@ class UnixTerminal implements Terminal
      * Assert that both the Input & Output streams are interactive. Throw
      * `NotInteractiveTerminal` if not.
      */
-    public function mustBeInteractive() : void
+    public function mustBeInteractive(): void
     {
         if (!$this->input->isInteractive()) {
             throw NotInteractiveTerminal::inputNotInteractive();
@@ -187,7 +187,7 @@ class UnixTerminal implements Terminal
     /**
      * @see https://github.com/symfony/Console/blob/master/Output/StreamOutput.php#L95-L102
      */
-    public function supportsColour() : bool
+    public function supportsColour(): bool
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             return false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI') || 'xterm' === getenv('TERM');
@@ -196,12 +196,12 @@ class UnixTerminal implements Terminal
         return $this->isInteractive();
     }
 
-    public function clear() : void
+    public function clear(): void
     {
         $this->output->write("\033[2J");
     }
 
-    public function clearLine() : void
+    public function clearLine(): void
     {
         $this->output->write("\033[2K");
     }
@@ -209,12 +209,12 @@ class UnixTerminal implements Terminal
     /**
      * Erase screen from the current line down to the bottom of the screen
      */
-    public function clearDown() : void
+    public function clearDown(): void
     {
         $this->output->write("\033[J");
     }
 
-    public function clean() : void
+    public function clean(): void
     {
         foreach (range(0, $this->getHeight()) as $rowNum) {
             $this->moveCursorToRow($rowNum);
@@ -222,37 +222,37 @@ class UnixTerminal implements Terminal
         }
     }
 
-    public function enableCursor() : void
+    public function enableCursor(): void
     {
         $this->output->write("\033[?25h");
     }
 
-    public function disableCursor() : void
+    public function disableCursor(): void
     {
         $this->output->write("\033[?25l");
     }
 
-    public function moveCursorToTop() : void
+    public function moveCursorToTop(): void
     {
         $this->output->write("\033[H");
     }
 
-    public function moveCursorToRow(int $rowNumber) : void
+    public function moveCursorToRow(int $rowNumber): void
     {
         $this->output->write(sprintf("\033[%d;0H", $rowNumber));
     }
 
-    public function moveCursorToColumn(int $column) : void
+    public function moveCursorToColumn(int $column): void
     {
         $this->output->write(sprintf("\033[%dC", $column));
     }
 
-    public function showSecondaryScreen() : void
+    public function showSecondaryScreen(): void
     {
         $this->output->write("\033[?47h");
     }
 
-    public function showPrimaryScreen() : void
+    public function showPrimaryScreen(): void
     {
         $this->output->write("\033[?47l");
     }
