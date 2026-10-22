@@ -1,8 +1,10 @@
 language: php
 
 php:
-  - 7.1
-  - 7.2
+  - 8.2
+  - 8.3
+  - 8.4
+  - 8.5
 
 install:
   - composer self-update
@@ -12,7 +14,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - ./vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
+  - ./vendor/bin/phpunit --stop-on-error --coverage-clover ./build/logs/clover.xml
   - composer cs
   - composer static
 
