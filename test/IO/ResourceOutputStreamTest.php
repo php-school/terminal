@@ -33,4 +33,19 @@ class ResourceOutputStreamTest extends TestCase
         rewind($stream);
         static::assertEquals('123456789', stream_get_contents($stream));
     }
+
+    public function testWriteRetriesPartialWrites(): void
+    {
+        stream_wrapper_register('partial', PartialWriteStream::class);
+
+        try {
+            $stream = fopen('partial://test', 'w');
+            $outputStream = new ResourceOutputStream($stream);
+            $outputStream->write('123456789');
+
+            static::assertEquals('123456789', PartialWriteStream::$contents);
+        } finally {
+            stream_wrapper_unregister('partial');
+        }
+    }
 }
