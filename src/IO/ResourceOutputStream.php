@@ -36,7 +36,15 @@ class ResourceOutputStream implements OutputStream
 
     public function write(string $buffer): void
     {
-        fwrite($this->stream, $buffer);
+        // The stream may be non-blocking (on a TTY it shares a file description with STDIN,
+        // which ResourceInputStream makes non-blocking), so fwrite can write only part of the buffer
+        while ($buffer !== '') {
+            $written = fwrite($this->stream, $buffer);
+            if ($written === false) {
+                return;
+            }
+            $buffer = substr($buffer, $written);
+        }
     }
 
     /**
